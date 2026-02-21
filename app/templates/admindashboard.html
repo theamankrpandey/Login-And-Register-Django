@@ -1,0 +1,416 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+   <link rel="stylesheet" href="{% static 'css/admindashboard.css' %}">
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: white;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #020617;
+            padding: 20px;
+        }
+
+        .sidebar h4 {
+            color: #0dcaf0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar a:hover {
+            background: #0dcaf0;
+            color: black;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            width: 85%;
+        }
+
+        .content {
+            margin-left: 300px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: #020617;
+            border-radius: 12px;
+            border: none;
+        }
+
+        .form-control {
+            background: #020617;
+            color: white;
+            border: 1px solid #334155;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus {
+            background: #020617;
+            color: white;
+            box-shadow: none;
+            border-color: #0dcaf0;
+        }
+
+        table {
+            color: white;
+        }
+    </style>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f4f6f9;
+        }
+
+        .table-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .table-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: #1e293b;
+            color: #ffffffa7;
+        }
+
+        thead th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #9ebaf0;
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        tbody td {
+            padding: 12px;
+            color: #444;
+            vertical-align: top;
+        }
+
+        tbody td:nth-child(1) {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .reply {
+            color: #047857;
+            font-weight: 500;
+        }
+
+        .pending {
+            color: #b91c1c;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <h4>Admin Panel</h4>
+            <a href="{% url 'add_dept' %}">Add Department</a>
+            <a href="#">Add Employee</a>
+            <a href="{% url 'show_dept' %}">Show Departments</a>
+            <a href="#">Show Employees</a>
+            <a href="#">Employee Queries</a>
+
+            <a href="{% url 'logout' %}" class="btn btn-danger logout-btn">Logout</a>
+        </div>
+
+        <!-- CONTENT -->
+    
+        <div class="content w-100">
+
+            {% if data %}
+            <h2 class="text-info" style="color:red" >Welcome {{ data.name }}</h2>
+            <p  style="color:black">Select an option from the sidebar</p>
+            {% endif %}
+
+            {% if msg %}
+            <div class="alert alert-success" style="color:red" >{{ msg }}</div>
+            {% endif %}
+
+            {% if message %}
+            <div class="alert alert-warning">{{ message }}</div>
+            {% endif %}
+
+            <!-- ADD EMPLOYEE -->
+            {% if add_emp %}
+            <div class="row justify-content-center mt-4">
+                <div class="col-md-6">
+                    <div class="card p-4 shadow">
+                        <h4 class="text-info text-center mb-4">Add Employee</h4>
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="form-control mb-3" name="name" placeholder="Employee Name">
+
+                            <input class="form-control mb-3" type="email" name="email" placeholder="Email">
+                            <input class="form-control mb-3" name="contact" placeholder="Contact">
+
+                            <select name="emp_department" id="emp_department" class="form-select" required>
+                                <option value="">-- Select Department --</option>
+                                {% for i in all_dept %}
+                                <option value="{{ i.id }}">{{ i.name }}</option>
+                                {% endfor %}
+                            </select> <br>
+                            <input class="form-control mb-3" type="file" name="profile">
+                            <input class="form-control mb-3" type="password" name="password" placeholder="Password">
+                            <input class="form-control mb-3" type="password" name="cpassword"
+                                placeholder="Confirm Password">
+
+                            <button class="btn btn-info w-100">Register Employee</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ADD DEPARTMENT -->
+            {% if add_dept  %}
+                <h2>Add Department</h2>
+
+                <form action="{% url 'save_data' %}" method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Department Name</label>
+                        <input type="text" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Department Code</label>
+                        <input type="text" name="code" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Head of Department</label>
+                        <input type="text" name="head" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" rows="4" required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Save Department</button>
+                </form>
+            <!-- SHOW DEPARTMENTS -->
+            <!-- SHOW DEPARTMENTS -->
+           {% elif show_dept %}
+                <h2>All Departments</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Head</th>
+                            <th>Description</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in all_dept %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{ i.Dep_name }}</td>
+                            <td>{{ i.Dep_code }}</td>
+                            <td>{{ i.Dep_head }}</td>
+                            <td>{{ i.Dep_description }}</td>
+                            <td><a><button>Edit</button></a></td>
+                            <td><a><button>Delete</button></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+
+            <!-- SHOW EMPLOYEES -->
+            {% if show_emp %}
+            <div class="card p-4 shadow mt-4">
+                <h4 class="text-info mb-3">Employee List</h4>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>S.NO</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Contact</th>
+                                <th>Password</th>
+                                <th>Image</th>
+                                <th>Department</th>
+                                <th>D_code</th>
+                                <th>D_desc</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in employees %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ emp.name }}</td>
+                                <td>{{ emp.email }}</td>
+                                <td>{{ emp.contact }}</td>
+                                <td><span style="color:red;font-weight:bold;">Hidden</span></td>
+                                <td>
+                                    {% if emp.image %}
+                                    <img src="{{ emp.image.url }}" width="40" class="rounded-circle">
+                                    {% else %}
+                                    N/A
+                                    {% endif %}
+                                </td>
+                                <td>{{emp.department}}</td>
+                                <td>{{emp.d_code}}</td>
+                                <td>{{emp.d_des}}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-danger">No Data Found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+
+
+            {% if emp_query %}
+            <div class="table-container">
+                <h2>Customer Queries</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Query</th>
+                            <th>Reply</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for d in emp_query %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ d.name }}</td>
+                            <td>{{ d.email }}</td>
+                            <td>{{ d.subject }}</td>
+                            <td>{{ d.query }}</td>
+                            <td> <a href="{% url 'reply_query' d.id %}">Reply</a> </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+
+
+
+
+            {% if reply %}
+            <div class="container mt-4">
+                <div class="card shadow p-4">
+
+                    <h4 class="mb-3 text-center">Reply to Employee</h4>
+
+                    <form method="post">
+                        {% csrf_token %}
+
+
+                        <!-- Reply -->
+                        <div class="mb-3">
+                            <label class="form-label">Your Reply</label>
+                            <textarea name="reply" class="form-control" rows="3" placeholder="Write reply here..."
+                                required>
+                </textarea>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                Submit Reply
+                            </button>
+                            <a href="{% url 'emp_query' %}" class="btn btn-outline-secondary ms-2">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from .models import Employee
+from .models import Employee,Department
 # Create your views here.
 def landing(req):
     return render(req,'landing.html')
@@ -48,4 +48,70 @@ def register(req):
 
 
 def login(req):
+    if req.method == "POST":
+        e=req.POST.get('email')
+        p=req.POST.get('password')
+        if e=='ap5766709@gmail.com' and p=='pandey':
+            a_data={
+                'name':'Aman',
+                'email':'ap5766709@gmail.com',
+                'contact':'9934869719',
+                'password':'pandey'}
+            req.session['user_id']=a_data
+            return redirect('admindashboard')
+        else:
+            user = Employee.objects.filter(Email=e)
+            if not user:
+                msg="Register First"
+                return redirect('register')
+            else:
+                userdata=Employee.objects.get(Email=e)
+                if p == userdata.Password:
+                    req.session['user_id']=userdata.id
+                    return redirect('userdashboard')
+                else:
+                    msg='Email & password not Match'
+                    return render(req,'login.html',{'x':msg})
     return render(req,'login.html')
+
+def userdashboard(req):
+    if 'user_id' in req.session:
+        x = req.session.get('user_id')
+        userdata=Employee.objects.get(id=x)
+        return render (req,'userdashboard.html',{'data':userdata})
+    return redirect ('login')
+
+def admindashboard(req):
+    if 'user_id' in req.session:
+        a_data = req.session.get('user_id')
+        return render (req, 'admindashboard.html',{'data':a_data})
+    else:
+        return redirect('login')
+    
+def add_dept(req):
+    if 'user_id' in req.session:
+        a_data = req.session.get('user_id')
+        return render (req, 'admindashboard.html',{'data':a_data,'add_dept':True})
+    else:
+        return redirect('login')
+    
+
+def show_dept(req):
+    if 'user_id' in req.session:
+        a_data = req.session.get('user_id')
+        all_dept = Employee.objects.all()  # <-- department list
+        return render(req, 'admindashboard.html',
+                      {'data': a_data,
+                       'show_dept': True,
+                       'all_dept': all_dept})
+    else:
+        return redirect('login')
+
+
+
+
+
+def logout(req):
+    if req.session.get('user_id',None):
+        req.session.flush()
+    return redirect('login')
