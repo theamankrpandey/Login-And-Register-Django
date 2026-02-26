@@ -70,18 +70,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'project.wsgi.application'
 
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
+}
+
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME":'logindb',
-        "USER":'root',
-        "PASSWORD":'aman123',
-        "POST":3306
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME":'logindb',
+#         "USER":'root',
+#         "PASSWORD":'aman123',
+#         "POST":3306
+#     }
+# }
 
 
 # Password validation

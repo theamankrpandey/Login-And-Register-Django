@@ -56,6 +56,7 @@
             margin-left: 300px;
             padding: 30px;
             min-height: 100vh;
+            background:#0206176e;
         }
 
         .card {
@@ -221,13 +222,12 @@
                     </div>
                 </div>
             </div>
-            {% endif %}
 
             <!-- ADD DEPARTMENT -->
-            {% if add_dept  %}
+            {% elif add_dept  %}
                 <h2>Add Department</h2>
 
-                <form action="{% url 'save_data' %}" method="POST">
+                <form action="{% url 'save_data' %}" method="post">
                     {% csrf_token %}
 
                     <div class="form-group">
@@ -280,6 +280,7 @@
                             <td>{{ i.Dep_description }}</td>
                             <td><a><button>Edit</button></a></td>
                             <td><a><button>Delete</button></a></td>
+                            <td><a href="#"><button>Reply</button></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -288,7 +289,7 @@
 
 
             <!-- SHOW EMPLOYEES -->
-            {% if show_emp %}
+            {% elif show_emp %}
             <div class="card p-4 shadow mt-4">
                 <h4 class="text-info mb-3">Employee List</h4>
 

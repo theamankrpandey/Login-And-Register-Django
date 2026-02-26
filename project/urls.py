@@ -27,4 +27,5 @@ urlpatterns = [
     path('add_dept/',add_dept,name='add_dept'),
     path('show_dept/',show_dept,name='show_dept'),
     path('logout/',logout,name='logout'),
+    path('save_data/',save_data,name='save_data'),
 ]

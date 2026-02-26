@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from .models import Employee,Department
+from django.contrib import messages
 # Create your views here.
 def landing(req):
     return render(req,'landing.html')
@@ -95,11 +96,29 @@ def add_dept(req):
     else:
         return redirect('login')
     
-
+def save_data(req):
+    if 'user_id' in req.session:
+        if req.method=='POST':
+            d_n=req.POST.get('name') 
+            d_c=req.POST.get('code') 
+            d_h=req.POST.get('head') 
+            d_d=req.POST.get('description')
+            dept=Department.objects.filter(Dep_name=d_n)
+            if dept:
+                messages.warning(req,'Department already exists')
+                a_data=req.session.get('a_data')
+                return render(req,'admindashboard.html',{'data':a_data,'add_dep':True})
+            else:
+                Department.objects.create(Dep_name=d_n,Dep_code=d_c,Dep_head=d_h,Dep_description=d_d)
+                messages.success(req,"Department created")
+                a_data=req.session.get('a_data')
+                return render(req,'admindashboard.html',{'data':a_data,'add_dep':True})
+    else:
+        return redirect('login')
 def show_dept(req):
     if 'user_id' in req.session:
         a_data = req.session.get('user_id')
-        all_dept = Employee.objects.all()  # <-- department list
+        all_dept = Department.objects.all()  # <-- department list
         return render(req, 'admindashboard.html',
                       {'data': a_data,
                        'show_dept': True,
@@ -108,8 +127,17 @@ def show_dept(req):
         return redirect('login')
 
 
+# def reply(req,pk):
+#     if 'user_id' in req.session:
+#         q_data=Query.object.get(id=pk)
+#         emp_all_query=Query.objects.all()
+#         return render(req,{'data':a_data,'q_data':q_data,'emp_all_query':emp_all_query})
 
-
+# def a_reply(req):
+#     if 'user_id' in req.session:
+#         q_old_data=Query.objects.get(id=pk)
+#         if req.method=='POST':
+#             ar=req.POST.get('a_reply')
 
 def logout(req):
     if req.session.get('user_id',None):

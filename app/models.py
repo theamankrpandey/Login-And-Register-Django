@@ -14,8 +14,7 @@ class Employee(models.Model):
     State=models.CharField(max_length=50)
     def __str__(self):
         return str (self.Name)
-    
-from django.db import models
+
 
 class Department(models.Model):
     Dep_name = models.CharField(max_length=100)
@@ -23,6 +22,8 @@ class Department(models.Model):
     Dep_head = models.CharField(max_length=100, null=True, blank=True)
     Dep_description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    Reply=models.TextField(null=True)
 
     def __str__(self):
         return self.Dep_name
+    
