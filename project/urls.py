@@ -14,18 +14,47 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from app.views import *
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',landing,name="landing"),
-    path('register/',register,name='register'),
+    path('', landing, name='landing'),
+    path('registration/',registration , name='registration'),
     path('login/',login,name='login'),
-    path('userdashboard',userdashboard,name='userdashboard'),
-    path('admindashboard/',admindashboard,name='admindashboard'),
+    # path('userdashboard/', userdashboard, name='userdashboard'),
+    path('admindashboard/',admindashboard, name='admindashboard'),
     path('add_dept/',add_dept,name='add_dept'),
     path('show_dept/',show_dept,name='show_dept'),
+    path('save_dept/',save_dept,name='save_dept'),
+    path('add_emp/',add_emp,name='add_emp'),
+    path('show_emp/',show_emp,name='show_emp'),
+    path('save_emp/',save_emp,name='save_emp'),
+    path('employeedashboard/',employeedashboard,name='employeedashboard'),
+    path('profile/',profile,name='profile'),
+    path('setting/',setting,name='setting'),
+    path('Query/',Query,name='Query'),
+    path('edit/',edit,name='edit'),
+    path('reset/',reset,name='reset'),
+    path('querydata/',querydata,name='querydata'),
+    path('all_Query/',all_Query,name='all_Query'),
+    path('pending_Query/',pending_Query,name='pending_Query'),
+    path('done_Query/',done_Query,name='done_Query'),
+    path('emp_all_Query/',emp_all_Query,name='emp_all_Query'),
+    path('reply/<int:pk>/',reply,name='reply'),
+    path('a_reply/<int:pk>/',a_reply,name='a_reply'),
+    path('cancel/',cancel,name='cancel'),
+    path('emp_edit/<int:pk>/',emp_edit,name='emp_edit'),
+    path('update/<int:pk>/',update,name='update'),
+    path('search/',search,name='search'),
+    path('reset/',reset,name='reset'),
+    path('reset/',all_Query,name='reset'),
+    path('item/',item,name='item'),
+    path('show_items/',show_items,name='show_items'),
+    path('delete/<int:pk>/',delete,name='delete'),
     path('logout/',logout,name='logout'),
-    path('save_data/',save_data,name='save_data'),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,29 +1,35 @@
 from django.db import models
+
 # Create your models here.
+
+
 class Employee(models.Model):
-    Name=models.CharField(max_length=50)
-    Email=models.EmailField()
-    Password=models.CharField(max_length=20)
-    Cpassword=models.CharField(max_length=20)
-    Profile=models.ImageField(null=True)
-    Audio=models.FileField(upload_to='audio')
-    Video=models.FileField(upload_to='video')
-    Resume=models.FileField(upload_to='document')
-    Qualification=models.CharField(max_length=50)
-    Gender=models.CharField(max_length=20)
-    State=models.CharField(max_length=50)
-    def __str__(self):
-        return str (self.Name)
+    Name = models.CharField(max_length=50)
+    Email= models.EmailField()
+    Contact = models.IntegerField()
+    Image= models.ImageField(upload_to='image',null=True)
+    Code = models.CharField(max_length=50)
+    Dept=models.CharField(max_length=20)
 
-
+  
 class Department(models.Model):
-    Dep_name = models.CharField(max_length=100)
-    Dep_code = models.CharField(max_length=20, unique=True)
-    Dep_head = models.CharField(max_length=100, null=True, blank=True)
-    Dep_description = models.TextField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    Reply=models.TextField(null=True)
+    Dep_n= models.CharField(max_length=30)
+    Dep_d= models.CharField(max_length=100)
+    Dep_h=models.CharField(max_length=30)
 
-    def __str__(self):
-        return self.Dep_name
-    
+class EmpQuery(models.Model):
+    Name = models.CharField(max_length=50)
+    Email= models.EmailField()
+    Dept = models.CharField(max_length=40)
+    Query = models.TextField()
+    Status = models.CharField(default="pending")
+    Reply = models.TextField(null=True)
+
+class Item(models.Model):
+    item_name = models.CharField(max_length=50)
+    item_desc = models.CharField(max_length=50)
+    item_price = models.CharField(max_length=50)
+    item_image = models.ImageField()
+    item_color = models.CharField(max_length=30)
+    item_categery = models.CharField(max_length=50)
+    item_quantity = models.CharField(max_length=50)
